@@ -25,12 +25,16 @@ namespace ShopUZ.Models.ViewModels.Pages
         public int Id { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 3)]
-        public string Title { get; set; }
+        [Display(Name = "Tytuł strony")]
+        public string Title { get; set; }[StringLength(50, MinimumLength = 3)]
+        [Display(Name = "Adres strony")]
         public string Slug { get; set; }
         [Required]
         [StringLength(int.MaxValue, MinimumLength = 3)]
+        [Display(Name = "Zawartość strony")]
         public string Body { get; set; }
         public int Sorting { get; set; }
+        [Display(Name = "Pasek boczny")]
         public bool HasSidebar { get; set; }
     }
 }
