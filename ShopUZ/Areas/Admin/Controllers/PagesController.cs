@@ -81,5 +81,27 @@ namespace ShopUZ.Areas.Admin.Controllers
             TempData["SM"] = "Dodałeś nową stronę!";
             return RedirectToAction("AddPage");
         }
+        // GET: Admin/Pages/EditPage
+        [HttpGet]
+        public ActionResult EditPage(int id)
+        {
+            //Deklaracja PageVM
+            PageVM model;
+
+            using (Db db = new Db())
+            {
+                //Pobieramy strone z bazy o przekazanym id
+                PageDTO dto = db.Pages.Find(id);
+                //Sprawdzamy czy taka strona istnieje
+                if (dto == null)
+                {
+                    return Content("Strona nie isniteje!");
+                }
+                model = new PageVM(dto);
+            }
+
+            return View(model);
+        }
     }
+
 }
