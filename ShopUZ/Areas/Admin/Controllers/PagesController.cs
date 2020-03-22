@@ -123,8 +123,6 @@ namespace ShopUZ.Areas.Admin.Controllers
                 //pobranie strony do edycji
                 PageDTO dto = db.Pages.Find(id);
 
-                dto.Title = model.Title;
-
                 if(model.Slug != "home")
                 {
                     if (string.IsNullOrWhiteSpace(model.Slug))
@@ -137,15 +135,26 @@ namespace ShopUZ.Areas.Admin.Controllers
                         slug = model.Slug.Replace(" ", "-").ToLower(); 
                     }
                 }
-
+                //Sprawdzamy unikalność strony, adresu
                 if(db.Pages.Where(x => x.Id != id).Any(x => x.Title == model.Title) || 
-                    db.Pages.Where(x => x.Id != id).Any(x => x.Slug == slug)
+                    db.Pages.Where(x => x.Id != id).Any(x => x.Slug == slug))
                 {
-
+                    ModelState.AddModelError("", "Strona lub adres strony już istnieje!");
                 }
+                //Modyfikacje DTO
+                dto.Title = model.Title;
+                dto.Slug = slug;
+                dto.HasSidebar = model.HasSidebar;
+                dto.Body = model.Body;
 
+                //zapis edytowanej strony do bazy
+                db.SaveChanges();
             }
-            return View();
+            //ustawienie komunikatu TempData
+            TempData["SM"] = "Wyedytowałeś stronę";
+
+            //Redirect
+            return RedirectToAction("EditPage");
         }
 
     }
