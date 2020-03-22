@@ -157,6 +157,29 @@ namespace ShopUZ.Areas.Admin.Controllers
             return RedirectToAction("EditPage");
         }
 
+        public ActionResult Details(int id)
+        {
+            //deklaracja PageVM
+            PageVM model;
+
+            using (Db db = new Db())
+            {
+                //pobranie strony o id
+                PageDTO dto = db.Pages.Find(id);
+
+                //Sprawdzamy czy strona o takim id istnieje
+                if (dto == null)
+                {
+                    return Content("Strona o podanym id nie istnieje!");
+                }
+
+                //Inicializacja PageVM
+                model = new PageVM(dto);
+
+
+            }
+            return View(model);
+        }
     }
 
 }
