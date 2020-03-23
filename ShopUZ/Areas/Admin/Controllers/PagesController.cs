@@ -9,6 +9,7 @@ namespace ShopUZ.Areas.Admin.Controllers
     public class PagesController : Controller
     {
         // GET: Admin/Pages
+        [HttpGet]
         public ActionResult Index()
         {
             //Deklaracja listy PageViewModel
@@ -158,6 +159,7 @@ namespace ShopUZ.Areas.Admin.Controllers
         }
 
         // GET: Admin/Pages/Details/id
+        [HttpGet]
         public ActionResult Details(int id)
         {
             //deklaracja PageVM
@@ -183,6 +185,7 @@ namespace ShopUZ.Areas.Admin.Controllers
         }
 
         // GET: Admin/Pages/Delete/id
+        [HttpGet]
         public ActionResult Delete(int id)
         {
 
@@ -199,6 +202,30 @@ namespace ShopUZ.Areas.Admin.Controllers
             }
             //przekierowanie Redirect
             return RedirectToAction("Index");
+        }
+
+        // POST: Admin/Pages/ReorderPages
+        [HttpPost]
+        public ActionResult ReorderPages(int[] id)
+        {
+            using (Db db = new Db())
+            {
+                int count = 1;
+                PageDTO dto;
+
+                //sortowanie stron, zapis w bazie danych
+                foreach(var pageId in id)
+                {
+                    dto = db.Pages.Find(pageId);
+                    dto.Sorting = count;
+
+                    db.SaveChanges();
+                    count++;
+                }
+
+            }
+
+            return View();
         }
     }
 

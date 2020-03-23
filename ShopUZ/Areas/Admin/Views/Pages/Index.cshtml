@@ -7,7 +7,7 @@
 <h2>Strony</h2>
 
 <p>
-    @Html.ActionLink("Dodaj nową stronę", "Create")
+    @Html.ActionLink("Dodaj nową stronę", "AddPage")
 </p>
 
 @if (!Model.Any())
@@ -17,8 +17,8 @@
 
 else
 {
-    <table class="table">
-        <tr>
+    <table class="table sorting" id="pages">
+        <tr class="home">
             <th>
                 Tytuł strony
             </th>
@@ -34,7 +34,7 @@ else
 
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="id_@item.Id" class="@item.Slug">
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
@@ -62,7 +62,7 @@ else
 
 @section scripts{
 
-    <script src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
     <script>
         /*
@@ -73,5 +73,25 @@ else
                 if (!confirm("Potwierdzasz usuniecię strony")) return false;
             });
         });
+        ////////////////////////////////////////////////////////////////////////
+
+        /*
+        * Sortowanie stron drag and drop
+        */
+        $(function () {
+            $("table#pages tbody").sortable({
+                items: "tr:not(.home)", 
+                placeholder: "ui-state-highlight",
+                update: function () {
+                    var ids = $("table#pages tbody").sortable("serialize");
+                    var url = "/Admin/Pages/ReorderPages";
+
+                    $.post(url, ids, function (data) {
+
+                    })
+                }
+            })
+        });
+        ////////////////////////////////////////////////////////////////////////
     </script>
     }
