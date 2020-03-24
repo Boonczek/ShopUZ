@@ -227,6 +227,48 @@ namespace ShopUZ.Areas.Admin.Controllers
 
             return View();
         }
+
+        //GET: Admin/Pages/EditSidebar
+        [HttpGet]
+        public ActionResult EditSidebar()
+        {
+            //Deklaracja SidebarVM
+            SidebarVM model;
+
+            using (Db db = new Db())
+            {
+                //Pobieramy SidebarDTO
+                SidebarDTO dto = db.Sidebar.Find(1);
+
+                //Inicializacja modelu
+                model = new SidebarVM(dto);
+
+            }
+
+            return View(model);
+        }
+
+        //POST: Admin/Pages/EditSidebar
+        [HttpPost]
+        public ActionResult EditSidebar(SidebarVM model)
+        {
+            using(Db db = new Db())
+            {
+                //Pobieramy Sidebar DTO
+                SidebarDTO dto = db.Sidebar.Find(1);
+
+                //Modyfikacja Sidebar
+                dto.Body = model.Body;
+
+                //Zapis w bazie danych
+                db.SaveChanges();
+            }
+
+            //Ustawiwamy komunikat o modyfikacji Sidebar
+            TempData["SM"] = "Zmodyfikowałeś Pasek Boczny";
+            //Przekierowanie Redirect
+            return RedirectToAction("EditSidebar");
+        }
     }
 
 }
