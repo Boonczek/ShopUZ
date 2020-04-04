@@ -1,4 +1,5 @@
-﻿using ShopUZ.Models.Data;
+﻿using System.Web.Mvc;
+using ShopUZ.Models.Data;
 
 namespace ShopUZ.Models.ViewModels.Pages
 {
@@ -15,6 +16,7 @@ namespace ShopUZ.Models.ViewModels.Pages
             Body = row.Body;
         }
         public int Id { get; set; }
+        [AllowHtml]
         public string Body { get; set; }
     }
 }
