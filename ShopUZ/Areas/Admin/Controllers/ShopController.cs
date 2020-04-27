@@ -87,6 +87,25 @@ namespace ShopUZ.Areas.Admin.Controllers
             return View();
         }
 
+        // GET: Admin/Shop/DeleteCategory
+        [HttpGet]
+        public ActionResult DeleteCategory(int id)
+        {
+            using (Db db = new Db())
+            {
+                // pobieramy kategorie o podnym id
+                CategoryDTO dto = db.Categories.Find(id);
+
+                // usuwamy kategorie
+                db.Categories.Remove(dto);
+
+                // zapis na bazie
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Categories");
+        }
+
     }
     
 }
