@@ -1,4 +1,5 @@
-﻿using ShopUZ.Models.Data;
+﻿using PagedList;
+using ShopUZ.Models.Data;
 using ShopUZ.Models.ViewModels.Shop;
 using System.Collections.Generic;
 using System.IO;
@@ -271,6 +272,40 @@ namespace ShopUZ.Areas.Admin.Controllers
             #endregion
 
             return RedirectToAction("AddProduct");
+        }
+
+
+        // GET: Admin/Shop/Products
+        [HttpGet]
+        public ActionResult Products(int? page, int? catId)
+        {
+            //Deklaracja listy Produktów
+            List<ProductVM> listofProductVM;
+
+            //Ustawiamy nr strony
+            var pageNumber = page ?? 1;
+
+            using(Db db = new Db())
+            {
+                //inicializacja listy produktów
+                listofProductVM = db.Products.ToArray()
+                                    .Where(x => catId == null || catId == 0 || x.CategoryId == catId)
+                                    .Select(x => new ProductVM(x))
+                                    .ToList();
+
+                //lista kategorii do dropdown list
+                ViewBag.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+
+                //ustawiamy wybrana kategorie
+                ViewBag.SelectedCat = catId.ToString();
+            }
+
+            //ustawienie stronicowania
+            var onePageOfProducts = listofProductVM.ToPagedList(pageNumber, 3);
+            ViewBag.OnePageOfProducts = onePageOfProducts;
+
+            //Zwracamy widok z lista produktow
+            return View(listofProductVM);
         }
 
     }
