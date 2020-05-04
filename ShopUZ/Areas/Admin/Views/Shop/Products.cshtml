@@ -94,7 +94,16 @@
         })
        
         ////////////////////////////////////////////////////////////////////////
+
+        /*
+        * Potwierdzasz usuniecię strony
+        */
+        $(function () {
+            $("a.delete").click(function () {
+                if (!confirm("Potwierdzasz usuniecię strony")) return false;
+            });
+        });
     </script>
 }
 
-    }
+    
