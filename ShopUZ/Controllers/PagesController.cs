@@ -76,5 +76,20 @@ namespace ShopUZ.Controllers
             //zwracamy PageVMList
             return PartialView(pageVMList);
         }
+
+        public ActionResult SidebarPartial()
+        {
+            //deklarujemy model
+            SidebarVM model;
+
+            //inicializujemy model
+            using(Db db = new Db())
+            {
+                SidebarDTO dto = db.Sidebar.Find(1);
+                model = new SidebarVM(dto);
+            }
+            //zwracamy Partial z modelem
+            return PartialView(model);
+        }
     }
 }
