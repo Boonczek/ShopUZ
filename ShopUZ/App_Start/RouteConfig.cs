@@ -12,7 +12,10 @@ namespace ShopUZ
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            
+
+            routes.MapRoute("Shop", "Shop/{action}/{name}", new { controller = "Shop", action = "Index", name = UrlParameter.Optional }, new[] { "ShopUz.Controllers" });
+
+
             routes.MapRoute("SidebarPartial", "Pages/SidebarPartial", new { controller = "Pages", action = "SidebarPartial" }, new[] { "ShopUz.Controllers" });
             routes.MapRoute("PagesMenuPartial", "Pages/PagesMenuPartial", new { controller = "Pages", action = "PagesMenuPartial" }, new[] { "ShopUz.Controllers" });
             routes.MapRoute("Pages", "{page}", new { controller = "Pages", action = "Index" }, new[] { "ShopUZ.Controllers" });
