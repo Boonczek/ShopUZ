@@ -58,5 +58,23 @@ namespace ShopUZ.Controllers
 
             return View(model);
         }
+
+        public ActionResult PagesMenuPartial()
+        {
+            //deklaracja PageVM
+            List<PageVM> pageVMList;
+
+            //pobranie stron
+            using(Db db = new Db())
+            {
+                pageVMList = db.Pages.ToArray()
+                    .OrderBy(x => x.Sorting)
+                    .Where(x => x.Slug != "home")
+                    .Select(x => new PageVM(x))
+                    .ToList();
+            }
+            //zwracamy PageVMList
+            return PartialView(pageVMList);
+        }
     }
 }
