@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<ShopUZ.Models.ViewModels.Shop.ProductVM>
 
 @{
-    ViewBag.Title =  ViewBag.CategoryName;
+    ViewBag.Title = ViewBag.CategoryName;
 }
 
-    <h2>ViewBag.CategoryName</h2>
+<h2>@ViewBag.CategoryName</h2>
 
 <table class="table">
     <tr>
@@ -23,26 +23,27 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            <a href="/shop/product-szczegoly/@item.Slug">
-                <img src="~/Images/Uploads/Products/@item.Id/Thumbs/@item.ImageName" />
-            </a>
-        </td>
-        <td>
-            <a href="/shop/product-szczegoly/@item.Slug">Szczegóły</a>
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <a href="/shop/product-szczegoly/@item.Slug">
+                    <img src="/Images/Uploads/Products/@item.Id/Thumbs/@item.ImageName" />
+                </a>
+            </td>
+            <td>
+                <a href="/shop/product-szczegoly/@item.Slug">Szczególy</a>
+            </td>
+        </tr>
+    }
 
 </table>

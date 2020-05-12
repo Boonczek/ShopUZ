@@ -1,10 +1,8 @@
 ﻿using ShopUZ.Models.Data;
 using ShopUZ.Models.ViewModels.Shop;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ShopUZ.Controllers
@@ -16,6 +14,7 @@ namespace ShopUZ.Controllers
         {
             return RedirectToAction("Index", "Pages");
         }
+
 
         public ActionResult CategoryMenuPartial()
         {
@@ -36,68 +35,68 @@ namespace ShopUZ.Controllers
             return PartialView(categoryVMList);
         }
 
-        //GET: /shop/Category/name
+        // GET: /shop/category/name
         public ActionResult Category(string name)
         {
-            //delkaracja ProductVMList
-            List<ProductVM> productVMLIst;
+            // deklaracja productVMList
+            List<ProductVM> productVMList;
 
-            using(Db db = new Db())
+            using (Db db = new Db())
             {
-                //pobranie id kategorii
+                // pobranie id kategorii
                 CategoryDTO categoryDTO = db.Categories.Where(x => x.Slug == name).FirstOrDefault();
                 int catId = categoryDTO.Id;
 
-                //Inicializacja listy produktów
-                productVMLIst = db.Products
-                    .ToArray()
-                    .Where(x => x.CategoryId == catId)
-                    .Select(x => new ProductVM(x)).ToList();
+                // inicjalizacja listy produktów
+                productVMList = db.Products
+                                  .ToArray()
+                                  .Where(x => x.CategoryId == catId)
+                                  .Select(x => new ProductVM(x)).ToList();
 
-                //pobieramy nazwe kategorii
+                // pobieramy nazwe kategori
                 var productCat = db.Products.Where(x => x.CategoryId == catId).FirstOrDefault();
                 ViewBag.CategoryName = productCat.CategoryName;
             }
-            //zwracamy widok z lista produktow
-            return View(productVMLIst);
+
+            // zwracamy widok z lista produktów z danej kategorii
+            return View(productVMList);
         }
 
-        //GET: /shop/product-szczegoly/name
+        // GET: /shop/product-szczegoly/name
         [ActionName("product-szczegoly")]
         public ActionResult ProductDetails(string name)
         {
-            //deklaracja productVM i productDTO
+            // deklaracja productVM i productDTO
             ProductVM model;
             ProductDTO dto;
 
-            //inicializacja productId
+            // Inicjalizacja product id
             int id = 0;
 
-            using(Db db = new Db())
+            using (Db db = new Db())
             {
-                //sprawdzamy czy produkt istnieje
+                // sprawdzamy czy produkt istnieje
                 if (!db.Products.Any(x => x.Slug.Equals(name)))
                 {
                     return RedirectToAction("Index", "Shop");
                 }
 
-                //inicializacja productDTO
+                // inicjalizacja productDTO
                 dto = db.Products.Where(x => x.Slug == name).FirstOrDefault();
 
-                //pobranie id
+                // pobranie id
                 id = dto.Id;
 
-                //inicializacja modelu
+                // inicjalizacja modelu
                 model = new ProductVM(dto);
             }
 
-            //pobieramy galerie zdjec dla wybranego produktu
+            // pobieramy galerie zdjec dla wybranegoproduktu
             model.GalleryImages = Directory.EnumerateFiles(Server.MapPath("~/Images/Uploads/Products/" + id + "/Gallery/Thumbs"))
                                            .Select(fn => Path.GetFileName(fn));
 
-            //zwracamy widok z modelem
+            // zwracamy wido z modelem
             return View("ProductDetails", model);
         }
-
     }
 }
