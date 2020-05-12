@@ -2,6 +2,7 @@
 using ShopUZ.Models.ViewModels.Shop;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -35,6 +36,7 @@ namespace ShopUZ.Controllers
             return PartialView(categoryVMList);
         }
 
+        //GET: /shop/Category/name
         public ActionResult Category(string name)
         {
             //delkaracja ProductVMList
@@ -58,6 +60,43 @@ namespace ShopUZ.Controllers
             }
             //zwracamy widok z lista produktow
             return View(productVMLIst);
+        }
+
+        //GET: /shop/product-szczegoly/name
+        [ActionName("product-szczegoly")]
+        public ActionResult ProductDetails(string name)
+        {
+            //deklaracja productVM i productDTO
+            ProductVM model;
+            ProductDTO dto;
+
+            //inicializacja productId
+            int id = 0;
+
+            using(Db db = new Db())
+            {
+                //sprawdzamy czy produkt istnieje
+                if (!db.Products.Any(x => x.Slug.Equals(name)))
+                {
+                    return RedirectToAction("Index", "Shop");
+                }
+
+                //inicializacja productDTO
+                dto = db.Products.Where(x => x.Slug == name).FirstOrDefault();
+
+                //pobranie id
+                id = dto.Id;
+
+                //inicializacja modelu
+                model = new ProductVM(dto);
+            }
+
+            //pobieramy galerie zdjec dla wybranego produktu
+            model.GalleryImages = Directory.EnumerateFiles(Server.MapPath("~/Images/Uploads/Products/" + id + "/Gallery/Thumbs"))
+                                           .Select(fn => Path.GetFileName(fn));
+
+            //zwracamy widok z modelem
+            return View("ProductDetails", model);
         }
 
     }
