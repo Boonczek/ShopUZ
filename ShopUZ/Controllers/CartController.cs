@@ -1,4 +1,5 @@
 ﻿using CmsShop.Models.ViewModels.Cart;
+using ShopUZ.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,59 @@ namespace ShopUZ.Controllers
                 qty = 0;
                 price = 0m;
             }
+
+            return PartialView(model);
+        }
+
+        public ActionResult AddToCartPartial(int id)
+        {
+            // Inicjalizacja CartVM List
+            List<CartVM> cart = Session["cart"] as List<CartVM> ?? new List<CartVM>();
+
+            // Inicjalizacja cartVM
+            CartVM model = new CartVM();
+
+            using (Db db = new Db())
+            {
+                // pobieramy produkt
+                ProductDTO product = db.Products.Find(id);
+
+                // sprawdzamy czy ten produkt jest juz w koszyku 
+                var productInCart = cart.FirstOrDefault(x => x.ProductId == id);
+
+                // w zaleznosci od tego czy produkt jest w koszyku go dodajemy lub zwiekszamy ilosc
+                if (productInCart == null)
+                {
+                    cart.Add(new CartVM()
+                    {
+                        ProductId = product.Id,
+                        ProductName = product.Name,
+                        Quantity = 1,
+                        Price = product.Price,
+                        Image = product.ImageName
+                    });
+                }
+                else
+                {
+                    productInCart.Quantity++;
+                }
+            }
+
+            //pobieramy calkowite wartosc ilosci i ceny i dodajemy do modelu
+            int qty = 0;
+            decimal price = 0m;
+
+            foreach (var item in cart)
+            {
+                qty += item.Quantity;
+                price += item.Quantity * item.Price;
+            }
+
+            model.Quantity = qty;
+            model.Price = price;
+
+            // zapis w sesii
+            Session["cart"] = cart;
 
             return PartialView(model);
         }
