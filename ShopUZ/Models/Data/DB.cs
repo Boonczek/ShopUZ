@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using CmsShop.Models.Data;
+using System.Data.Entity;
 
 
 namespace ShopUZ.Models.Data
@@ -10,5 +11,8 @@ namespace ShopUZ.Models.Data
         public DbSet<CategoryDTO> Categories { get; set; }
 
         public DbSet<ProductDTO> Products { get; set; }
+        public DbSet<UserDTO> Users { get; set; }
+        public DbSet<RoleDTO> Roles { get; set; }
+        public DbSet<UserRoleDTO> UserRoles { get; set; }
     }
 }
