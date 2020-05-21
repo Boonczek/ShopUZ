@@ -1,4 +1,5 @@
 ﻿using CmsShop.Models.Data;
+using CmsShop.Models.ViewModels.Account;
 using ShopUZ.Models.Data;
 using ShopUZ.Models.ViewModels.Account;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace ShopUZ.Controllers
 {
@@ -28,6 +30,38 @@ namespace ShopUZ.Controllers
 
             // zwracamy widok
             return View();
+        }
+
+        // POST: /account/login
+        [HttpPost]
+        public ActionResult Login(LoginUserVM model)
+        {
+            // sprawdzenie model state
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // sprawdzamy uzytkownika
+            bool isValid = false;
+            using (Db db = new Db())
+            {
+                if (db.Users.Any(x => x.UserName.Equals(model.UserName) && x.Password.Equals(model.Password)))
+                {
+                    isValid = true;
+                }
+            }
+
+            if (!isValid)
+            {
+                ModelState.AddModelError("", "Nieprawidłowa nazwa użytkownika lub hasło");
+                return View(model);
+            }
+            else
+            {
+                FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
+                return Redirect(FormsAuthentication.GetRedirectUrl(model.UserName, model.RememberMe));
+            }
         }
 
         // GET: /account/create-account
@@ -100,6 +134,39 @@ namespace ShopUZ.Controllers
 
 
             return Redirect("~/account/login");
+        }
+
+        // GET: /account/logout
+        [Authorize]
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+
+            return Redirect("~/account/login");
+        }
+
+        [Authorize]
+        public ActionResult UserNavPartial()
+        {
+            // pobieramy username
+            string username = User.Identity.Name;
+
+            // deklarujemy model
+            UserNavPartialVM model;
+
+            using (Db db = new Db())
+            {
+                // pobieramy uzytkownika
+                UserDTO dto = db.Users.FirstOrDefault(x => x.UserName == username);
+
+                model = new UserNavPartialVM()
+                {
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName
+                };
+            }
+
+            return PartialView(model);
         }
     }
 }
