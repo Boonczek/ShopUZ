@@ -168,5 +168,28 @@ namespace ShopUZ.Controllers
 
             return PartialView(model);
         }
+
+        // GET: /account/user-profile
+        [HttpGet]
+        [ActionName("user-profile")]
+        [Authorize]
+        public ActionResult UserProfile()
+        {
+            // pobieramy nazwe uzytkownika
+            string username = User.Identity.Name;
+
+            //deklarujemy model
+            UserProfileVM model;
+
+            using (Db db = new Db())
+            {
+                // pobieramy uzytkownika
+                UserDTO dto = db.Users.FirstOrDefault(x => x.UserName == username);
+
+                model = new UserProfileVM(dto);
+            }
+
+            return View("UserProfile", model);
+        }
     }
 }
