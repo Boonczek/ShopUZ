@@ -6,6 +6,8 @@ using ShopUZ.Models.ViewModels.Pages;
 
 namespace ShopUZ.Areas.Admin.Controllers
 {
+
+    [Authorize(Roles = "Admin")]
     public class PagesController : Controller
     {
         // GET: Admin/Pages
